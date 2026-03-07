@@ -8,7 +8,7 @@ import { EnhancingOverlay } from "@/components/EnhancingOverlay";
 import { playSendSound, playImpactSound, playScouterBeep, playResultSound } from "@/lib/sounds";
 import { enhanceDiagnosis } from "@/app/actions/enhance-diagnosis";
 import { parseDiagnosisResult } from "@/lib/parse-result";
-import type { Message, DiagnosisPhase } from "@/types/diagnosis";
+import type { Message, MessageRole, DiagnosisPhase } from "@/types/diagnosis";
 
 function generateId() {
   return crypto.randomUUID();
@@ -81,8 +81,12 @@ export default function DiagnosisPage() {
     setIsLoading(true);
 
     // API用のメッセージ（オープニングの"診断を開始してください"を含める）
+    const initMessage: { role: MessageRole; content: string } = {
+      role: "user",
+      content: "診断を開始してください",
+    };
     const apiMessages = [
-      { role: "user" as const, content: "診断を開始してください" },
+      initMessage,
       ...updatedMessages.map((msg) => ({
         role: msg.role,
         content: msg.content,

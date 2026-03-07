@@ -64,6 +64,18 @@ const mapCategoryFromType = (type: string): string | undefined => {
   return undefined;
 };
 
+const isRoadmap = (value: unknown): value is Roadmap => {
+  if (typeof value !== "object" || value === null) return false;
+  return (
+    "shortTerm" in value && typeof value.shortTerm === "string" &&
+    "midTerm" in value && typeof value.midTerm === "string" &&
+    "longTerm" in value && typeof value.longTerm === "string"
+  );
+};
+
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((s: unknown) => typeof s === "string");
+
 export const enhanceDiagnosisResult = async (
   baseResult: DiagnosisResult,
   userMessages: string[]
@@ -97,19 +109,14 @@ export const enhanceDiagnosisResult = async (
       return { ...baseResult, isEnhanced: true };
     }
 
-    const obj = parsed as Record<string, unknown>;
     const roadmap =
-      obj.roadmap &&
-      typeof obj.roadmap === "object" &&
-      "shortTerm" in (obj.roadmap as Record<string, unknown>) &&
-      "midTerm" in (obj.roadmap as Record<string, unknown>) &&
-      "longTerm" in (obj.roadmap as Record<string, unknown>)
-        ? (obj.roadmap as Roadmap)
+      "roadmap" in parsed && isRoadmap(parsed.roadmap)
+        ? parsed.roadmap
         : undefined;
+
     const recommendedSkills =
-      Array.isArray(obj.recommendedSkills) &&
-      obj.recommendedSkills.every((s: unknown) => typeof s === "string")
-        ? (obj.recommendedSkills as string[])
+      "recommendedSkills" in parsed && isStringArray(parsed.recommendedSkills)
+        ? parsed.recommendedSkills
         : undefined;
 
     return {
