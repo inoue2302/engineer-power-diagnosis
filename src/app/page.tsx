@@ -159,7 +159,7 @@ export default function Home() {
               💬
             </span>
             <span className="font-dot text-[var(--foreground)] opacity-60 text-xs tracking-wider">
-              全10問の対話形式
+              全7問の対話形式
             </span>
           </div>
         </div>

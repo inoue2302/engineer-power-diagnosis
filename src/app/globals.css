@@ -20,6 +20,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
 }
 
 /* ====== ENERGY AURA ====== */
@@ -202,6 +203,72 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ====== BATTLE EFFECTS ====== */
+
+/* Impact flash - 王子のメッセージ着弾 */
+@keyframes impact-flash {
+  0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+  30% { opacity: 1; transform: scale(1.03) translateY(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-impact {
+  animation: impact-flash 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Ki blast send - ユーザー送信 */
+@keyframes ki-blast {
+  0% { opacity: 0; transform: scale(0.5) translateX(30px); }
+  50% { opacity: 1; transform: scale(1.05) translateX(0); }
+  100% { opacity: 1; transform: scale(1) translateX(0); }
+}
+
+.animate-ki-blast {
+  animation: ki-blast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Screen flash - 画面全体のフラッシュ */
+@keyframes screen-flash {
+  0% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+
+.animate-screen-flash {
+  animation: screen-flash 0.4s ease-out forwards;
+}
+
+/* Result explosion */
+@keyframes result-explosion {
+  0% { transform: scale(0); opacity: 0; }
+  40% { transform: scale(1.2); opacity: 1; }
+  60% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-result-explosion {
+  animation: result-explosion 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Shockwave ring */
+@keyframes shockwave {
+  0% { transform: scale(0); opacity: 0.6; border-width: 3px; }
+  100% { transform: scale(3); opacity: 0; border-width: 1px; }
+}
+
+.animate-shockwave {
+  animation: shockwave 0.8s ease-out forwards;
+}
+
+/* Power charge bar glow */
+@keyframes charge-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(255, 107, 0, 0.3); }
+  50% { box-shadow: 0 0 15px rgba(255, 107, 0, 0.6), 0 0 30px rgba(255, 107, 0, 0.2); }
+}
+
+.animate-charge-glow {
+  animation: charge-glow 1.5s ease-in-out infinite;
 }
 
 /* Noise texture overlay */
