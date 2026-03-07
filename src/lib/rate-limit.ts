@@ -19,8 +19,8 @@ const getTodayKey = () => {
 export const checkGlobalRateLimit = async (): Promise<boolean> => {
   const redis = getRedis();
   if (!redis) {
-    // Redis未設定時はスキップ（Cookie制限にフォールバック）
-    return true;
+    // Redis未設定時は安全側に倒す（本番では必ず Redis を設定すること）
+    return false;
   }
 
   const key = getTodayKey();
