@@ -4,7 +4,10 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { sendMessage } from "@/app/actions/chat";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
+import { EnhancingOverlay } from "@/components/EnhancingOverlay";
 import { playSendSound, playImpactSound, playScouterBeep, playResultSound } from "@/lib/sounds";
+import { enhanceDiagnosis } from "@/app/actions/enhance-diagnosis";
+import { parseDiagnosisResult } from "@/lib/parse-result";
 import type { Message, DiagnosisPhase } from "@/types/diagnosis";
 
 function generateId() {
@@ -16,6 +19,7 @@ export default function DiagnosisPage() {
   const [phase, setPhase] = useState<DiagnosisPhase>("idle");
   const [isLoading, setIsLoading] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
+  const [isEnhancing, setIsEnhancing] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const initialized = useRef(false);
   const flashTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -107,11 +111,48 @@ export default function DiagnosisPage() {
         playScouterBeep();
       }
 
-      setMessages([...updatedMessages, assistantMessage]);
+      const newMessages = [...updatedMessages, assistantMessage];
+      setMessages(newMessages);
 
       // 診断結果のJSONが含まれていたら結果フェーズへ
       if (isResult) {
         setPhase("result");
+
+        // 非同期でRAG強化を実行（ベース結果は即座に表示される）
+        const baseResult = parseDiagnosisResult(result.message);
+        if (baseResult) {
+          setIsEnhancing(true);
+          const userMsgs = updatedMessages
+            .filter((m) => m.role === "user")
+            .map((m) => m.content);
+
+          enhanceDiagnosis(baseResult, userMsgs)
+            .then((res) => {
+              if (res.success) {
+                // 結果メッセージ内のJSONを強化版で差し替え
+                const enhancedJson = JSON.stringify(res.result);
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === assistantMessage.id
+                      ? {
+                          ...msg,
+                          content: msg.content.replace(
+                            /```json\s*[\s\S]*?```/,
+                            "```json\n" + enhancedJson + "\n```"
+                          ),
+                        }
+                      : msg
+                  )
+                );
+              }
+            })
+            .catch(() => {
+              // RAG失敗時はベース結果のまま表示（エラー非表示）
+            })
+            .finally(() => {
+              setIsEnhancing(false);
+            });
+        }
       }
     } else {
       setMessages([
@@ -140,6 +181,9 @@ export default function DiagnosisPage() {
       {showFlash && (
         <div className="fixed inset-0 z-50 bg-[var(--energy-orange)] animate-screen-flash pointer-events-none" />
       )}
+
+      {/* RAG Enhancing overlay */}
+      <EnhancingOverlay visible={isEnhancing} />
 
       {/* Header */}
       <header className="sticky top-0 z-20 border-b border-[rgba(255,107,0,0.15)] bg-[rgba(5,5,5,0.9)] backdrop-blur-sm">

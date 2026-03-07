@@ -1,13 +1,17 @@
 import { forwardRef } from "react";
 import { match } from "ts-pattern";
-import type { DiagnosisResult, Rank } from "@/types/diagnosis";
+import type { DiagnosisResult, EnhancedDiagnosisResult, Rank } from "@/types/diagnosis";
 import { RadarChart } from "@/components/RadarChart";
 import { ShareButtons } from "@/components/ShareButtons";
 
 type DiagnosisResultCardProps = {
-  result: DiagnosisResult;
+  result: DiagnosisResult | EnhancedDiagnosisResult;
   onSaveImage?: () => void;
 };
+
+function isEnhanced(result: DiagnosisResult | EnhancedDiagnosisResult): result is EnhancedDiagnosisResult {
+  return "isEnhanced" in result && result.isEnhanced === true;
+}
 
 const getRankColor = (rank: Rank) =>
   match(rank)
@@ -46,6 +50,11 @@ export const DiagnosisResultCard = forwardRef<HTMLDivElement, DiagnosisResultCar
         >
           {result.powerLevel.toLocaleString()}
         </p>
+        {isEnhanced(result) && (
+          <span className="inline-block rounded-full border border-[var(--scouter-green)] bg-[rgba(57,255,20,0.1)] px-3 py-0.5 font-dot text-[10px] text-[var(--scouter-green)] tracking-widest animate-scouter-blink">
+            RAG ENHANCED
+          </span>
+        )}
       </div>
 
       {/* ランク＆タイプ */}
