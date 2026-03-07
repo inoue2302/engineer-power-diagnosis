@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { sendMessage } from "@/app/actions/chat";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
+import { playSendSound, playImpactSound, playScouterBeep, playResultSound } from "@/lib/sounds";
 import type { Message, DiagnosisPhase } from "@/types/diagnosis";
 
 function generateId() {
@@ -64,6 +65,8 @@ export default function DiagnosisPage() {
       content,
     };
 
+    playSendSound();
+
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
@@ -86,14 +89,22 @@ export default function DiagnosisPage() {
         content: result.message,
       };
 
-      // Screen flash on message arrival
+      // Screen flash + sound on message arrival
       setShowFlash(true);
       setTimeout(() => setShowFlash(false), 400);
+
+      const isResult = result.message.includes('"powerLevel"');
+      if (isResult) {
+        playResultSound();
+      } else {
+        playImpactSound();
+        playScouterBeep();
+      }
 
       setMessages([...updatedMessages, assistantMessage]);
 
       // 診断結果のJSONが含まれていたら結果フェーズへ
-      if (result.message.includes('"powerLevel"')) {
+      if (isResult) {
         setPhase("result");
       }
     } else {
