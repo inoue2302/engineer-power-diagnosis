@@ -1,4 +1,6 @@
 import type { MessageRole } from "@/types/diagnosis";
+import { parseDiagnosisResult, stripJsonBlock } from "@/lib/parse-result";
+import { DiagnosisResultCard } from "@/components/DiagnosisResultCard";
 
 type ChatMessageProps = {
   role: MessageRole;
@@ -8,6 +10,8 @@ type ChatMessageProps = {
 
 export function ChatMessage({ role, content, isLoading }: ChatMessageProps) {
   const isAssistant = role === "assistant";
+  const diagnosisResult = isAssistant ? parseDiagnosisResult(content) : null;
+  const displayContent = diagnosisResult ? stripJsonBlock(content) : content;
 
   return (
     <div
@@ -38,7 +42,16 @@ export function ChatMessage({ role, content, isLoading }: ChatMessageProps) {
             />
           </div>
         ) : (
-          <p className="whitespace-pre-wrap">{content}</p>
+          <>
+            {displayContent && (
+              <p className="whitespace-pre-wrap">{displayContent}</p>
+            )}
+            {diagnosisResult && (
+              <div className={displayContent ? "mt-4" : ""}>
+                <DiagnosisResultCard result={diagnosisResult} />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
