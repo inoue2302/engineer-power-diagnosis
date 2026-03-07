@@ -40,4 +40,10 @@ export type DiagnosisResult = {
   recommendedSkills?: string[];
 };
 
+export type EnhancedDiagnosisResult = DiagnosisResult & {
+  isEnhanced: true;
+  originalRoadmap?: Roadmap;
+  originalRecommendedSkills?: string[];
+};
+
 export type DiagnosisPhase = "idle" | "chatting" | "result";
