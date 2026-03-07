@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { match } from "ts-pattern";
 import type { DiagnosisResult, Rank } from "@/types/diagnosis";
 import { RadarChart } from "@/components/RadarChart";
@@ -5,6 +6,7 @@ import { ShareButtons } from "@/components/ShareButtons";
 
 type DiagnosisResultCardProps = {
   result: DiagnosisResult;
+  onSaveImage?: () => void;
 };
 
 const getRankColor = (rank: Rank) =>
@@ -26,11 +28,11 @@ const Divider = () => {
   );
 };
 
-export const DiagnosisResultCard = ({ result }: DiagnosisResultCardProps) => {
+export const DiagnosisResultCard = forwardRef<HTMLDivElement, DiagnosisResultCardProps>(({ result, onSaveImage }, ref) => {
   const rankColor = getRankColor(result.rank);
 
   return (
-    <div className="relative w-full max-w-md mx-auto space-y-4 animate-result-explosion">
+    <div ref={ref} className="relative w-full max-w-md mx-auto space-y-4 animate-result-explosion">
       {/* Shockwave ring */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border-2 border-[var(--energy-orange)] animate-shockwave pointer-events-none" />
 
@@ -164,7 +166,9 @@ export const DiagnosisResultCard = ({ result }: DiagnosisResultCardProps) => {
       <Divider />
 
       {/* シェアボタン */}
-      <ShareButtons result={result} />
+      <ShareButtons result={result} onSaveImage={onSaveImage} />
     </div>
   );
-};
+});
+
+DiagnosisResultCard.displayName = "DiagnosisResultCard";
