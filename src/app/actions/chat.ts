@@ -1,6 +1,5 @@
 "use server";
 
-import { cookies } from "next/headers";
 import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM_PROMPT } from "@/lib/system-prompt";
 import { checkGlobalRateLimit } from "@/lib/rate-limit";
@@ -8,39 +7,7 @@ import type { MessageRole } from "@/types/diagnosis";
 
 const anthropic = new Anthropic();
 
-// Limits
 const MAX_MESSAGE_LENGTH = 500;
-const PER_USER_DAILY_LIMIT = Number(process.env.PER_USER_DAILY_LIMIT) || 50;
-const COOKIE_NAME = "diagnosis_count";
-
-// Cookie-based per-user daily rate limit
-const checkUserRateLimit = async (): Promise<boolean> => {
-  const cookieStore = await cookies();
-  const today = new Date().toISOString().slice(0, 10);
-  const raw = cookieStore.get(COOKIE_NAME)?.value;
-
-  let count = 0;
-  if (raw) {
-    try {
-      const parsed = JSON.parse(raw);
-      if (parsed.date === today) {
-        count = parsed.count;
-      }
-    } catch {
-      // corrupted cookie, reset
-    }
-  }
-
-  if (count >= PER_USER_DAILY_LIMIT) return false;
-
-  cookieStore.set(COOKIE_NAME, JSON.stringify({ date: today, count: count + 1 }), {
-    httpOnly: true,
-    sameSite: "strict",
-    maxAge: 86400,
-  });
-
-  return true;
-};
 
 type ChatMessage = {
   role: MessageRole;
@@ -82,15 +49,6 @@ export const sendMessage = async (
     };
   }
 
-  // Layer 2: Per-user limit (Cookie)
-  const userAllowed = await checkUserRateLimit();
-  if (!userAllowed) {
-    return {
-      success: false,
-      error: "フン…貴様は今日やりすぎだ。明日また来い。",
-    };
-  }
-
   try {
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
@@ -125,6 +83,7 @@ export const sendMessage = async (
       };
     }
 
+    console.error("[chat] API error:", error);
     return {
       success: false,
       error: "くっ…通信障害だと？貴様のせいではないが、もう一度試せ。",

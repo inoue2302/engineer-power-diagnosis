@@ -172,9 +172,6 @@ export default function Home() {
           <span className="font-dot text-[var(--foreground)] opacity-40 text-[10px] tracking-wider">
             結果はどこにも保存されません
           </span>
-          <span className="font-dot text-[var(--foreground)] opacity-40 text-[10px] tracking-wider">
-            レート制限のため1日10回までです
-          </span>
         </div>
 
         {/* Bottom HUD decoration */}
