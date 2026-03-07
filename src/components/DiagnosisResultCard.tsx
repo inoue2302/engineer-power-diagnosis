@@ -84,6 +84,85 @@ export function DiagnosisResultCard({ result }: DiagnosisResultCardProps) {
           </p>
         </div>
       </div>
+
+      {/* ロードマップ */}
+      {result.roadmap && (
+        <>
+          <div className="flex items-center gap-2 justify-center opacity-30">
+            <div className="w-12 h-px bg-gradient-to-r from-transparent to-[var(--energy-orange)]" />
+            <div className="w-1.5 h-1.5 rotate-45 border border-[var(--energy-orange)]" />
+            <div className="w-12 h-px bg-gradient-to-l from-transparent to-[var(--energy-orange)]" />
+          </div>
+
+          <div className="rounded-lg border border-[rgba(255,107,0,0.15)] bg-[rgba(255,107,0,0.05)] p-4 space-y-4">
+            <p className="font-dot text-[10px] text-[var(--energy-amber)] tracking-wider">
+              GROWTH ROADMAP
+            </p>
+            <div className="space-y-3">
+              <div className="flex gap-3">
+                <div className="flex flex-col items-center">
+                  <div className="w-2 h-2 rounded-full bg-[var(--scouter-green)] mt-1.5" />
+                  <div className="w-px flex-1 bg-[rgba(57,255,20,0.2)]" />
+                </div>
+                <div>
+                  <p className="font-dot text-[10px] text-[var(--scouter-green)] tracking-wider mb-1">
+                    3 MONTHS
+                  </p>
+                  <p className="text-sm leading-relaxed text-[var(--foreground)] opacity-80">
+                    {result.roadmap.shortTerm}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="flex flex-col items-center">
+                  <div className="w-2 h-2 rounded-full bg-[var(--energy-amber)] mt-1.5" />
+                  <div className="w-px flex-1 bg-[rgba(255,149,0,0.2)]" />
+                </div>
+                <div>
+                  <p className="font-dot text-[10px] text-[var(--energy-amber)] tracking-wider mb-1">
+                    1 YEAR
+                  </p>
+                  <p className="text-sm leading-relaxed text-[var(--foreground)] opacity-80">
+                    {result.roadmap.midTerm}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="flex flex-col items-center">
+                  <div className="w-2 h-2 rounded-full bg-[var(--energy-orange)] mt-1.5" />
+                </div>
+                <div>
+                  <p className="font-dot text-[10px] text-[var(--energy-orange)] tracking-wider mb-1">
+                    3-5 YEARS
+                  </p>
+                  <p className="text-sm leading-relaxed text-[var(--foreground)] opacity-80">
+                    {result.roadmap.longTerm}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* おすすめスキル */}
+      {result.recommendedSkills && result.recommendedSkills.length > 0 && (
+        <div className="rounded-lg border border-[rgba(255,107,0,0.15)] bg-[rgba(255,107,0,0.05)] p-4 space-y-3">
+          <p className="font-dot text-[10px] text-[var(--energy-amber)] tracking-wider">
+            NEXT SKILLS TO ACQUIRE
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {result.recommendedSkills.map((skill) => (
+              <span
+                key={skill}
+                className="rounded-full border border-[rgba(255,107,0,0.3)] bg-[rgba(255,107,0,0.1)] px-3 py-1 text-xs text-[var(--energy-gold)]"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

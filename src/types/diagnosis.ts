@@ -23,6 +23,12 @@ export type StatusScores = {
   survival: number;
 };
 
+export type Roadmap = {
+  shortTerm: string;
+  midTerm: string;
+  longTerm: string;
+};
+
 export type DiagnosisResult = {
   powerLevel: number;
   rank: Rank;
@@ -30,6 +36,8 @@ export type DiagnosisResult = {
   scores: StatusScores;
   comment: string;
   advice: string;
+  roadmap?: Roadmap;
+  recommendedSkills?: string[];
 };
 
 export type DiagnosisPhase = "idle" | "chatting" | "result";
