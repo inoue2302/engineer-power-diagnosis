@@ -1,10 +1,46 @@
 "use server";
 
+import { cookies } from "next/headers";
 import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM_PROMPT } from "@/lib/system-prompt";
+import { checkGlobalRateLimit } from "@/lib/rate-limit";
 import type { MessageRole } from "@/types/diagnosis";
 
 const anthropic = new Anthropic();
+
+// Limits
+const MAX_MESSAGE_LENGTH = 500;
+const PER_USER_DAILY_LIMIT = 50;
+const COOKIE_NAME = "diagnosis_count";
+
+// Cookie-based per-user daily rate limit
+const checkUserRateLimit = async (): Promise<boolean> => {
+  const cookieStore = await cookies();
+  const today = new Date().toISOString().slice(0, 10);
+  const raw = cookieStore.get(COOKIE_NAME)?.value;
+
+  let count = 0;
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed.date === today) {
+        count = parsed.count;
+      }
+    } catch {
+      // corrupted cookie, reset
+    }
+  }
+
+  if (count >= PER_USER_DAILY_LIMIT) return false;
+
+  cookieStore.set(COOKIE_NAME, JSON.stringify({ date: today, count: count + 1 }), {
+    httpOnly: true,
+    sameSite: "strict",
+    maxAge: 86400,
+  });
+
+  return true;
+};
 
 type ChatMessage = {
   role: MessageRole;
@@ -17,7 +53,7 @@ type ChatResponse =
 
 const VALID_ROLES: MessageRole[] = ["user", "assistant"];
 
-function validateMessages(messages: unknown): messages is ChatMessage[] {
+const validateMessages = (messages: unknown): messages is ChatMessage[] => {
   if (!Array.isArray(messages)) return false;
   return messages.every(
     (msg) =>
@@ -25,15 +61,34 @@ function validateMessages(messages: unknown): messages is ChatMessage[] {
       msg !== null &&
       VALID_ROLES.includes(msg.role) &&
       typeof msg.content === "string" &&
-      msg.content.trim().length > 0
+      msg.content.trim().length > 0 &&
+      msg.content.length <= MAX_MESSAGE_LENGTH
   );
-}
+};
 
-export async function sendMessage(
+export const sendMessage = async (
   messages: ChatMessage[]
-): Promise<ChatResponse> {
+): Promise<ChatResponse> => {
   if (!validateMessages(messages)) {
     return { success: false, error: "不正なリクエストだ。出直せ。" };
+  }
+
+  // Layer 1: Global limit (Upstash Redis)
+  const globalAllowed = await checkGlobalRateLimit();
+  if (!globalAllowed) {
+    return {
+      success: false,
+      error: "フン…今日は測定希望者が多すぎた。俺様のスカウターも限界だ。明日出直せ。",
+    };
+  }
+
+  // Layer 2: Per-user limit (Cookie)
+  const userAllowed = await checkUserRateLimit();
+  if (!userAllowed) {
+    return {
+      success: false,
+      error: "フン…貴様は今日やりすぎだ。明日また来い。",
+    };
   }
 
   try {
@@ -75,4 +130,4 @@ export async function sendMessage(
       error: "くっ…通信障害だと？貴様のせいではないが、もう一度試せ。",
     };
   }
-}
+};
