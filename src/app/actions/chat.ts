@@ -45,7 +45,7 @@ export const sendMessage = async (
   if (!globalAllowed) {
     return {
       success: false,
-      error: "フン…今日は測定希望者が多すぎた。俺様のスカウターも限界だ。明日出直せ。",
+      error: "フン…今日は測定希望者が多すぎた。俺様の測定装置も限界だ。明日出直せ。",
     };
   }
 
@@ -79,7 +79,7 @@ export const sendMessage = async (
       return {
         success: false,
         error:
-          "チッ…俺様のスカウターが過負荷で使えん。少し時間を置いてから来い。",
+          "チッ…俺様の測定装置が過負荷で使えん。少し時間を置いてから来い。",
       };
     }
 
