@@ -47,6 +47,7 @@ src/
 - 外部データ（JSON.parse / API レスポンス等）は type guard で検証してから使用する
 - 型定義は `src/types/` に集約するか、コンポーネントと同ファイルに colocate
 - Union 型やリテラル型を活用し、不正な状態を型レベルで排除する
+- **`for` 文は原則禁止** — `map` / `filter` / `reduce` 等の宣言的メソッドを使う（Web Audio 等の低レベル API は例外）
 
 ```typescript
 // Good: 状態を型で制約
