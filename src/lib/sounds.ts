@@ -66,6 +66,7 @@ export function playImpactSound() {
   noiseGain.gain.setValueAtTime(0.08, ctx.currentTime);
   noiseGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
   noise.start(ctx.currentTime);
+  noise.stop(ctx.currentTime + 0.1);
 }
 
 /** スカウター風ビープ（ピピッ） */

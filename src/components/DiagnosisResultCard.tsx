@@ -20,6 +20,16 @@ function getRankColor(rank: string) {
   }
 }
 
+function Divider() {
+  return (
+    <div className="flex items-center gap-2 justify-center opacity-30">
+      <div className="w-12 h-px bg-gradient-to-r from-transparent to-[var(--energy-orange)]" />
+      <div className="w-1.5 h-1.5 rotate-45 border border-[var(--energy-orange)]" />
+      <div className="w-12 h-px bg-gradient-to-l from-transparent to-[var(--energy-orange)]" />
+    </div>
+  );
+}
+
 export function DiagnosisResultCard({ result }: DiagnosisResultCardProps) {
   const rankColor = getRankColor(result.rank);
 
@@ -63,12 +73,7 @@ export function DiagnosisResultCard({ result }: DiagnosisResultCardProps) {
       {/* レーダーチャート */}
       {result.scores && <RadarChart scores={result.scores} />}
 
-      {/* 区切り */}
-      <div className="flex items-center gap-2 justify-center opacity-30">
-        <div className="w-12 h-px bg-gradient-to-r from-transparent to-[var(--energy-orange)]" />
-        <div className="w-1.5 h-1.5 rotate-45 border border-[var(--energy-orange)]" />
-        <div className="w-12 h-px bg-gradient-to-l from-transparent to-[var(--energy-orange)]" />
-      </div>
+      <Divider />
 
       {/* コメント */}
       <div className="rounded-lg border border-[rgba(255,107,0,0.15)] bg-[rgba(255,107,0,0.05)] p-4 space-y-3">
@@ -88,11 +93,7 @@ export function DiagnosisResultCard({ result }: DiagnosisResultCardProps) {
       {/* ロードマップ */}
       {result.roadmap && (
         <>
-          <div className="flex items-center gap-2 justify-center opacity-30">
-            <div className="w-12 h-px bg-gradient-to-r from-transparent to-[var(--energy-orange)]" />
-            <div className="w-1.5 h-1.5 rotate-45 border border-[var(--energy-orange)]" />
-            <div className="w-12 h-px bg-gradient-to-l from-transparent to-[var(--energy-orange)]" />
-          </div>
+          <Divider />
 
           <div className="rounded-lg border border-[rgba(255,107,0,0.15)] bg-[rgba(255,107,0,0.05)] p-4 space-y-4">
             <p className="font-dot text-[10px] text-[var(--energy-amber)] tracking-wider">

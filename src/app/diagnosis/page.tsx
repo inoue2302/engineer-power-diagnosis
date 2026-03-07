@@ -17,6 +17,8 @@ export default function DiagnosisPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const initialized = useRef(false);
+  const flashTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const scrollToBottom = useCallback(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -26,8 +28,11 @@ export default function DiagnosisPage() {
     scrollToBottom();
   }, [messages, isLoading, scrollToBottom]);
 
-  // オープニングメッセージ取得
+  // オープニングメッセージ取得（StrictMode二重実行ガード）
   useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+
     async function init() {
       setPhase("chatting");
       setIsLoading(true);
@@ -91,7 +96,8 @@ export default function DiagnosisPage() {
 
       // Screen flash + sound on message arrival
       setShowFlash(true);
-      setTimeout(() => setShowFlash(false), 400);
+      clearTimeout(flashTimer.current);
+      flashTimer.current = setTimeout(() => setShowFlash(false), 400);
 
       const isResult = result.message.includes('"powerLevel"');
       if (isResult) {
