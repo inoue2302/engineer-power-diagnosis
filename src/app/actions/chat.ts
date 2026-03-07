@@ -10,7 +10,7 @@ const anthropic = new Anthropic();
 
 // Limits
 const MAX_MESSAGE_LENGTH = 500;
-const PER_USER_DAILY_LIMIT = 50;
+const PER_USER_DAILY_LIMIT = Number(process.env.PER_USER_DAILY_LIMIT) || 50;
 const COOKIE_NAME = "diagnosis_count";
 
 // Cookie-based per-user daily rate limit

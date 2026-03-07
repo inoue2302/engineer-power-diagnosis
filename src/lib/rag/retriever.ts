@@ -11,7 +11,7 @@ type RetrievedDocument = {
 };
 
 const isValidCategory = (value: string): value is ValidCategory =>
-  (VALID_CATEGORIES as readonly string[]).includes(value);
+  VALID_CATEGORIES.some((c) => c === value);
 
 export const retrieveKnowledge = async (
   query: string,
@@ -31,11 +31,10 @@ export const retrieveKnowledge = async (
     ...(validatedCategory ? { filter: `category = '${validatedCategory}'` } : {}),
   });
 
-  return results
-    .filter((r) => r.metadata && r.data)
-    .map((r) => ({
-      content: r.data as string,
-      metadata: r.metadata as KnowledgeMetadata,
-      score: r.score,
-    }));
+  return results.reduce<RetrievedDocument[]>((docs, r) => {
+    if (typeof r.data === "string" && r.metadata) {
+      docs.push({ content: r.data, metadata: r.metadata, score: r.score });
+    }
+    return docs;
+  }, []);
 };

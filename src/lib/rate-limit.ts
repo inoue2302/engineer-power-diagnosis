@@ -1,6 +1,6 @@
 import { Redis } from "@upstash/redis";
 
-const DAILY_GLOBAL_LIMIT = 100;
+const DAILY_GLOBAL_LIMIT = Number(process.env.DAILY_GLOBAL_LIMIT) || 100;
 const KEY_PREFIX = "diagnosis";
 
 const getRedis = () => {
