@@ -108,7 +108,7 @@ export default function DiagnosisPage() {
   const progressMatch = [...messages]
     .reverse()
     .find((m) => m.role === "assistant")
-    ?.content.match(/[（(](\d+)\/10[）)]/);
+    ?.content.match(/[（(](\d+)\/7[）)]/);
   const currentQuestion = progressMatch ? parseInt(progressMatch[1], 10) : null;
 
   return (
