@@ -70,8 +70,9 @@ const splitIntoChunks = (content: string, maxChunkSize = 500): string[] => {
 };
 
 const main = async () => {
-  if (process.env.NODE_ENV === "production") {
-    console.error("❌ Cannot run seed in production");
+  // Vercel ビルド時 (VERCEL=1) は許可、それ以外の本番環境はブロック
+  if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
+    console.error("❌ Cannot run seed in production (set VERCEL=1 to override)");
     process.exit(1);
   }
 
