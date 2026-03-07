@@ -1,4 +1,5 @@
 import type { DiagnosisResult } from "@/types/diagnosis";
+import { RadarChart } from "@/components/RadarChart";
 
 type DiagnosisResultCardProps = {
   result: DiagnosisResult;
@@ -55,6 +56,9 @@ export function DiagnosisResultCard({ result }: DiagnosisResultCardProps) {
           </p>
         </div>
       </div>
+
+      {/* レーダーチャート */}
+      {result.scores && <RadarChart scores={result.scores} />}
 
       {/* 区切り */}
       <div className="flex items-center gap-2 justify-center opacity-30">

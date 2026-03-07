@@ -15,10 +15,19 @@ export type WarriorType =
   | "学習意欲型"
   | "サバイバー型";
 
+export type StatusScores = {
+  technique: number;
+  problemSolving: number;
+  learning: number;
+  communication: number;
+  survival: number;
+};
+
 export type DiagnosisResult = {
   powerLevel: number;
   rank: Rank;
   type: WarriorType;
+  scores: StatusScores;
   comment: string;
   advice: string;
 };
