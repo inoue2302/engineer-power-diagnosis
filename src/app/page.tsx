@@ -164,6 +164,19 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Privacy & rate limit notices */}
+        <div
+          className="mt-4 flex flex-col items-center gap-1.5 animate-slide-up"
+          style={{ animationDelay: "1.5s", animationFillMode: "both" }}
+        >
+          <span className="font-dot text-[var(--foreground)] opacity-40 text-[10px] tracking-wider">
+            結果はどこにも保存されません
+          </span>
+          <span className="font-dot text-[var(--foreground)] opacity-40 text-[10px] tracking-wider">
+            レート制限のため1日10回までです
+          </span>
+        </div>
+
         {/* Bottom HUD decoration */}
         <div
           className="mt-12 flex items-center gap-2 opacity-30 animate-slide-up"
