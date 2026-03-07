@@ -1,6 +1,7 @@
 import { match } from "ts-pattern";
 import type { DiagnosisResult, Rank } from "@/types/diagnosis";
 import { RadarChart } from "@/components/RadarChart";
+import { ShareButtons } from "@/components/ShareButtons";
 
 type DiagnosisResultCardProps = {
   result: DiagnosisResult;
@@ -159,6 +160,11 @@ export const DiagnosisResultCard = ({ result }: DiagnosisResultCardProps) => {
           </div>
         </div>
       )}
+
+      <Divider />
+
+      {/* シェアボタン */}
+      <ShareButtons result={result} />
     </div>
   );
 };
