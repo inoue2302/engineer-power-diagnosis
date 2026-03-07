@@ -35,6 +35,8 @@ yarn-error.log*
 
 # playwright
 .playwright-mcp/
+screenshots/*
+!screenshots/.gitkeep
 
 # vercel
 .vercel
