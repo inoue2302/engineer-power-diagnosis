@@ -70,6 +70,11 @@ const splitIntoChunks = (content: string, maxChunkSize = 500): string[] => {
 };
 
 const main = async () => {
+  if (process.env.NODE_ENV === "production") {
+    console.error("❌ Cannot run seed in production");
+    process.exit(1);
+  }
+
   await loadEnv();
 
   const url = process.env.UPSTASH_VECTOR_REST_URL;

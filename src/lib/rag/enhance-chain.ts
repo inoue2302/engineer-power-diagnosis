@@ -36,17 +36,24 @@ const ENHANCE_PROMPT = PromptTemplate.fromTemplate(`あなたは技術キャリ�
 }}
 \`\`\``);
 
-const model = new ChatAnthropic({
-  model: "claude-sonnet-4-20250514",
-  maxTokens: 512,
-  temperature: 0.7,
-});
+let _model: ChatAnthropic | null = null;
+const getModel = () => {
+  if (!_model) {
+    _model = new ChatAnthropic({
+      model: "claude-sonnet-4-20250514",
+      maxTokens: 512,
+      temperature: 0.7,
+    });
+  }
+  return _model;
+};
 
-const chain = RunnableSequence.from([
-  ENHANCE_PROMPT,
-  model,
-  new StringOutputParser(),
-]);
+const getChain = () =>
+  RunnableSequence.from([
+    ENHANCE_PROMPT,
+    getModel(),
+    new StringOutputParser(),
+  ]);
 
 const mapCategoryFromType = (type: string): string | undefined => {
   if (type.includes("技術")) return "frontend";
@@ -69,7 +76,7 @@ export const enhanceDiagnosisResult = async (
     ? docs.map((d) => `[${d.metadata.title}]\n${d.content}`).join("\n\n---\n\n")
     : "関連情報なし";
 
-  const result = await chain.invoke({
+  const result = await getChain().invoke({
     powerLevel: baseResult.powerLevel.toString(),
     rank: baseResult.rank,
     type: baseResult.type,
@@ -84,18 +91,34 @@ export const enhanceDiagnosisResult = async (
 
   try {
     const jsonStr = jsonMatch[1] ?? jsonMatch[0];
-    const enhanced = JSON.parse(jsonStr) as {
-      roadmap?: Roadmap;
-      recommendedSkills?: string[];
-    };
+    const parsed: unknown = JSON.parse(jsonStr);
+
+    if (typeof parsed !== "object" || parsed === null) {
+      return { ...baseResult, isEnhanced: true };
+    }
+
+    const obj = parsed as Record<string, unknown>;
+    const roadmap =
+      obj.roadmap &&
+      typeof obj.roadmap === "object" &&
+      "shortTerm" in (obj.roadmap as Record<string, unknown>) &&
+      "midTerm" in (obj.roadmap as Record<string, unknown>) &&
+      "longTerm" in (obj.roadmap as Record<string, unknown>)
+        ? (obj.roadmap as Roadmap)
+        : undefined;
+    const recommendedSkills =
+      Array.isArray(obj.recommendedSkills) &&
+      obj.recommendedSkills.every((s: unknown) => typeof s === "string")
+        ? (obj.recommendedSkills as string[])
+        : undefined;
 
     return {
       ...baseResult,
       isEnhanced: true,
       originalRoadmap: baseResult.roadmap,
       originalRecommendedSkills: baseResult.recommendedSkills,
-      ...(enhanced.roadmap ? { roadmap: enhanced.roadmap } : {}),
-      ...(enhanced.recommendedSkills ? { recommendedSkills: enhanced.recommendedSkills } : {}),
+      ...(roadmap ? { roadmap } : {}),
+      ...(recommendedSkills ? { recommendedSkills } : {}),
     };
   } catch {
     return { ...baseResult, isEnhanced: true };
