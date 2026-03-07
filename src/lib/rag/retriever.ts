@@ -13,6 +13,20 @@ type RetrievedDocument = {
 const isValidCategory = (value: string): value is ValidCategory =>
   VALID_CATEGORIES.some((c) => c === value);
 
+// ホワイトリスト検証済みの値のみを受け取るため安全だが、
+// テンプレートリテラルでのフィルタ組み立てを避けマップベースにする
+const CATEGORY_FILTERS: Record<ValidCategory, string> = {
+  frontend: "category = 'frontend'",
+  backend: "category = 'backend'",
+  fullstack: "category = 'fullstack'",
+  leadership: "category = 'leadership'",
+  learning: "category = 'learning'",
+  infrastructure: "category = 'infrastructure'",
+};
+
+const buildCategoryFilter = (category: ValidCategory): string =>
+  CATEGORY_FILTERS[category];
+
 export const retrieveKnowledge = async (
   query: string,
   category?: string,
@@ -28,7 +42,7 @@ export const retrieveKnowledge = async (
     topK,
     includeMetadata: true,
     includeData: true,
-    ...(validatedCategory ? { filter: `category = '${validatedCategory}'` } : {}),
+    ...(validatedCategory ? { filter: buildCategoryFilter(validatedCategory) } : {}),
   });
 
   return results.reduce<RetrievedDocument[]>((docs, r) => {
