@@ -1,3 +1,6 @@
+"use client";
+
+import { useRef, useCallback } from "react";
 import type { MessageRole } from "@/types/diagnosis";
 import { parseDiagnosisResult, stripJsonBlock } from "@/lib/parse-result";
 import { DiagnosisResultCard } from "@/components/DiagnosisResultCard";
@@ -12,6 +15,20 @@ export const ChatMessage = ({ role, content, isLoading }: ChatMessageProps) => {
   const isAssistant = role === "assistant";
   const diagnosisResult = isAssistant ? parseDiagnosisResult(content) : null;
   const displayContent = diagnosisResult ? stripJsonBlock(content) : content;
+  const resultCardRef = useRef<HTMLDivElement>(null);
+
+  const handleSaveImage = useCallback(async () => {
+    if (!resultCardRef.current) return;
+    const { default: html2canvas } = await import("html2canvas-pro");
+    const canvas = await html2canvas(resultCardRef.current, {
+      backgroundColor: "#0a0a0a",
+      scale: 2,
+    });
+    const link = document.createElement("a");
+    link.download = "engineer-power-diagnosis.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }, []);
 
   return (
     <div
@@ -50,7 +67,7 @@ export const ChatMessage = ({ role, content, isLoading }: ChatMessageProps) => {
             )}
             {diagnosisResult && (
               <div className={displayContent ? "mt-4" : ""}>
-                <DiagnosisResultCard result={diagnosisResult} />
+                <DiagnosisResultCard ref={resultCardRef} result={diagnosisResult} onSaveImage={handleSaveImage} />
               </div>
             )}
           </>
