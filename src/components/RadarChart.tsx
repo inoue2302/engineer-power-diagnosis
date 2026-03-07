@@ -17,17 +17,16 @@ const CENTER = SIZE / 2;
 const RADIUS = 70;
 const LEVELS = 4;
 
-function polarToCartesian(angle: number, radius: number) {
-  // Start from top (-90deg), go clockwise
+const polarToCartesian = (angle: number, radius: number) => {
   const rad = ((angle - 90) * Math.PI) / 180;
   return {
     x: CENTER + radius * Math.cos(rad),
     y: CENTER + radius * Math.sin(rad),
   };
-}
+};
 
-function getPolygonPoints(values: number[]) {
-  return values
+const getPolygonPoints = (values: number[]) =>
+  values
     .map((v, i) => {
       const angle = (360 / values.length) * i;
       const r = (v / 100) * RADIUS;
@@ -35,9 +34,8 @@ function getPolygonPoints(values: number[]) {
       return `${x},${y}`;
     })
     .join(" ");
-}
 
-function getGridPoints(level: number) {
+const getGridPoints = (level: number) => {
   const r = (level / LEVELS) * RADIUS;
   return Array.from({ length: 5 })
     .map((_, i) => {
@@ -46,9 +44,9 @@ function getGridPoints(level: number) {
       return `${x},${y}`;
     })
     .join(" ");
-}
+};
 
-export function RadarChart({ scores }: RadarChartProps) {
+export const RadarChart = ({ scores }: RadarChartProps) => {
   const values = LABELS.map((l) => scores[l.key]);
 
   return (
@@ -155,4 +153,4 @@ export function RadarChart({ scores }: RadarChartProps) {
       </svg>
     </div>
   );
-}
+};

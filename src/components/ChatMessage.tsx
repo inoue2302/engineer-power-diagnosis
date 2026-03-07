@@ -8,7 +8,7 @@ type ChatMessageProps = {
   isLoading?: boolean;
 };
 
-export function ChatMessage({ role, content, isLoading }: ChatMessageProps) {
+export const ChatMessage = ({ role, content, isLoading }: ChatMessageProps) => {
   const isAssistant = role === "assistant";
   const diagnosisResult = isAssistant ? parseDiagnosisResult(content) : null;
   const displayContent = diagnosisResult ? stripJsonBlock(content) : content;
@@ -58,4 +58,4 @@ export function ChatMessage({ role, content, isLoading }: ChatMessageProps) {
       </div>
     </div>
   );
-}
+};

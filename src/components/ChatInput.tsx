@@ -7,7 +7,7 @@ type ChatInputProps = {
   disabled?: boolean;
 };
 
-export function ChatInput({ onSend, disabled }: ChatInputProps) {
+export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
   const [input, setInput] = useState("");
 
   const handleSubmit = (e: FormEvent) => {
@@ -37,4 +37,4 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
       </button>
     </form>
   );
-}
+};

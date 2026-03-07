@@ -15,7 +15,7 @@ const getRankColor = (rank: Rank) =>
     .with("下級戦士", () => "from-[#888] to-[#aaa]")
     .exhaustive();
 
-function Divider() {
+const Divider = () => {
   return (
     <div className="flex items-center gap-2 justify-center opacity-30">
       <div className="w-12 h-px bg-gradient-to-r from-transparent to-[var(--energy-orange)]" />
@@ -23,9 +23,9 @@ function Divider() {
       <div className="w-12 h-px bg-gradient-to-l from-transparent to-[var(--energy-orange)]" />
     </div>
   );
-}
+};
 
-export function DiagnosisResultCard({ result }: DiagnosisResultCardProps) {
+export const DiagnosisResultCard = ({ result }: DiagnosisResultCardProps) => {
   const rankColor = getRankColor(result.rank);
 
   return (
@@ -161,4 +161,4 @@ export function DiagnosisResultCard({ result }: DiagnosisResultCardProps) {
       )}
     </div>
   );
-}
+};
