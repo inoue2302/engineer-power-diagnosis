@@ -24,7 +24,10 @@ export function DiagnosisResultCard({ result }: DiagnosisResultCardProps) {
   const rankColor = getRankColor(result.rank);
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-4 animate-slide-up">
+    <div className="relative w-full max-w-md mx-auto space-y-4 animate-result-explosion">
+      {/* Shockwave ring */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border-2 border-[var(--energy-orange)] animate-shockwave pointer-events-none" />
+
       {/* 戦闘力 */}
       <div className="text-center space-y-2">
         <p className="font-dot text-xs text-[var(--scouter-green)] tracking-widest">

@@ -15,7 +15,9 @@ export function ChatMessage({ role, content, isLoading }: ChatMessageProps) {
 
   return (
     <div
-      className={`flex gap-3 ${isAssistant ? "justify-start" : "justify-end"}`}
+      className={`flex gap-3 ${isAssistant ? "justify-start" : "justify-end"} ${
+        !isLoading ? (isAssistant ? "animate-impact" : "animate-ki-blast") : ""
+      }`}
     >
       {isAssistant && (
         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-[var(--energy-orange)] to-[var(--energy-amber)] flex items-center justify-center text-lg shadow-[0_0_15px_rgba(255,107,0,0.3)]">

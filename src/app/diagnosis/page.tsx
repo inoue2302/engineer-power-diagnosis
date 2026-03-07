@@ -14,6 +14,7 @@ export default function DiagnosisPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [phase, setPhase] = useState<DiagnosisPhase>("idle");
   const [isLoading, setIsLoading] = useState(false);
+  const [showFlash, setShowFlash] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
@@ -84,6 +85,11 @@ export default function DiagnosisPage() {
         role: "assistant",
         content: result.message,
       };
+
+      // Screen flash on message arrival
+      setShowFlash(true);
+      setTimeout(() => setShowFlash(false), 400);
+
       setMessages([...updatedMessages, assistantMessage]);
 
       // 診断結果のJSONが含まれていたら結果フェーズへ
@@ -104,7 +110,7 @@ export default function DiagnosisPage() {
     setIsLoading(false);
   };
 
-  // 進捗表示: assistantメッセージから (N/10) を検出
+  // 進捗表示: assistantメッセージから (N/7) を検出
   const progressMatch = [...messages]
     .reverse()
     .find((m) => m.role === "assistant")
@@ -113,6 +119,11 @@ export default function DiagnosisPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--background)]">
+      {/* Screen flash overlay */}
+      {showFlash && (
+        <div className="fixed inset-0 z-50 bg-[var(--energy-orange)] animate-screen-flash pointer-events-none" />
+      )}
+
       {/* Header */}
       <header className="sticky top-0 z-20 border-b border-[rgba(255,107,0,0.15)] bg-[rgba(5,5,5,0.9)] backdrop-blur-sm">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -125,12 +136,12 @@ export default function DiagnosisPage() {
           {currentQuestion !== null && phase === "chatting" && (
             <div className="flex items-center gap-2">
               <div className="font-dot text-xs scouter-text">
-                {currentQuestion}/10
+                {currentQuestion}/7
               </div>
-              <div className="w-20 h-1.5 bg-[rgba(255,255,255,0.1)] rounded-full overflow-hidden">
+              <div className="w-20 h-1.5 bg-[rgba(255,255,255,0.1)] rounded-full overflow-hidden animate-charge-glow">
                 <div
                   className="h-full bg-gradient-to-r from-[var(--energy-orange)] to-[var(--energy-gold)] rounded-full transition-all duration-500"
-                  style={{ width: `${(currentQuestion / 10) * 100}%` }}
+                  style={{ width: `${(currentQuestion / 7) * 100}%` }}
                 />
               </div>
             </div>
