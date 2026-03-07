@@ -15,9 +15,27 @@ type ChatResponse =
   | { success: true; message: string }
   | { success: false; error: string };
 
+const VALID_ROLES: MessageRole[] = ["user", "assistant"];
+
+function validateMessages(messages: unknown): messages is ChatMessage[] {
+  if (!Array.isArray(messages)) return false;
+  return messages.every(
+    (msg) =>
+      typeof msg === "object" &&
+      msg !== null &&
+      VALID_ROLES.includes(msg.role) &&
+      typeof msg.content === "string" &&
+      msg.content.trim().length > 0
+  );
+}
+
 export async function sendMessage(
   messages: ChatMessage[]
 ): Promise<ChatResponse> {
+  if (!validateMessages(messages)) {
+    return { success: false, error: "不正なリクエストだ。出直せ。" };
+  }
+
   try {
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
