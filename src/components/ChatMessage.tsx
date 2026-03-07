@@ -24,10 +24,15 @@ export const ChatMessage = ({ role, content, isLoading }: ChatMessageProps) => {
       backgroundColor: "#0a0a0a",
       scale: 2,
     });
-    const link = document.createElement("a");
-    link.download = "engineer-power-diagnosis.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = "engineer-power-diagnosis.png";
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+    }, "image/png");
   }, []);
 
   return (
