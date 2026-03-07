@@ -1,24 +1,19 @@
-import type { DiagnosisResult } from "@/types/diagnosis";
+import { match } from "ts-pattern";
+import type { DiagnosisResult, Rank } from "@/types/diagnosis";
 import { RadarChart } from "@/components/RadarChart";
 
 type DiagnosisResultCardProps = {
   result: DiagnosisResult;
 };
 
-function getRankColor(rank: string) {
-  switch (rank) {
-    case "伝説の戦士":
-      return "from-[#ffd700] to-[#ff6b00]";
-    case "エリート戦士":
-      return "from-[#ff9500] to-[#ff6b00]";
-    case "上級戦士":
-      return "from-[#4dc9f6] to-[#39ff14]";
-    case "中級戦士":
-      return "from-[#39ff14] to-[#4dc9f6]";
-    default:
-      return "from-[#888] to-[#aaa]";
-  }
-}
+const getRankColor = (rank: Rank) =>
+  match(rank)
+    .with("伝説の戦士", () => "from-[#ffd700] to-[#ff6b00]")
+    .with("エリート戦士", () => "from-[#ff9500] to-[#ff6b00]")
+    .with("上級戦士", () => "from-[#4dc9f6] to-[#39ff14]")
+    .with("中級戦士", () => "from-[#39ff14] to-[#4dc9f6]")
+    .with("下級戦士", () => "from-[#888] to-[#aaa]")
+    .exhaustive();
 
 function Divider() {
   return (
