@@ -69,7 +69,7 @@ export function playImpactSound() {
   noise.stop(ctx.currentTime + 0.1);
 }
 
-/** スカウター風ビープ（ピピッ） */
+/** 測定装置風ビープ（ピピッ） */
 export function playScouterBeep() {
   const ctx = getAudioContext();
 
