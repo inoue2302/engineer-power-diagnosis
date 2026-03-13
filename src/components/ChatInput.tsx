@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 
-const MAX_LENGTH = 500;
+const MAX_LENGTH = 300;
 
 type ChatInputProps = {
   onSend: (message: string) => void;
@@ -46,6 +46,11 @@ export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
           送信
         </button>
       </div>
+      {isOverLimit && (
+        <div className="text-left text-xs text-red-500 font-gothic">
+          ながすぎだ。{MAX_LENGTH}文字以内にしろ。
+        </div>
+      )}
       {input.length > 0 && (
         <div className={`text-right text-[10px] font-dot ${isOverLimit ? "text-red-500" : "text-[rgba(240,230,211,0.3)]"}`}>
           {input.length}/{MAX_LENGTH}

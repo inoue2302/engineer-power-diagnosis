@@ -2,7 +2,7 @@ import type { DiagnosisResult, Rank, WarriorType, StatusScores, Roadmap } from "
 
 const RANKS: readonly string[] = ["下級戦士", "中級戦士", "上級戦士", "エリート戦士", "伝説の戦士"];
 const WARRIOR_TYPES: readonly string[] = [
-  "技術特化型", "バランス型", "コミュ力特化型", "学習意欲型", "サバイバー型",
+  "技術特化型", "バランス型", "コミュ力特化型", "学習意欲型", "サバイバー型", "測定不能型",
 ];
 
 const isRank = (value: string): value is Rank =>

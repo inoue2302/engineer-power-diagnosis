@@ -7,7 +7,7 @@ import type { MessageRole } from "@/types/diagnosis";
 
 const anthropic = new Anthropic();
 
-const MAX_MESSAGE_LENGTH = 500;
+const MAX_MESSAGE_LENGTH = 300;
 
 type ChatMessage = {
   role: MessageRole;
