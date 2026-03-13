@@ -11,7 +11,9 @@ const getRedis = () => {
 };
 
 const getTodayKey = () => {
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const jst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const today = jst.toISOString().slice(0, 10);
   return `${KEY_PREFIX}:${today}`;
 };
 
