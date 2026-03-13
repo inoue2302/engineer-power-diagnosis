@@ -1,5 +1,16 @@
 import Link from "next/link";
 
+// パーティクルのスタイルを事前計算（レンダー中のMath.random回避）
+const PARTICLE_STYLES = Array.from({ length: 20 }).map(() => ({
+  left: `${10 + Math.random() * 80}%`,
+  bottom: "-10px" as const,
+  animationDuration: `${3 + Math.random() * 5}s`,
+  animationDelay: `${Math.random() * 5}s`,
+  width: `${2 + Math.random() * 3}px`,
+  height: `${2 + Math.random() * 3}px`,
+  opacity: 0.3 + Math.random() * 0.4,
+}));
+
 export default function Home() {
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center px-4">
@@ -42,19 +53,11 @@ export default function Home() {
       />
 
       {/* Energy particles */}
-      {Array.from({ length: 20 }).map((_, i) => (
+      {PARTICLE_STYLES.map((style, i) => (
         <div
           key={i}
           className="energy-particle"
-          style={{
-            left: `${10 + Math.random() * 80}%`,
-            bottom: "-10px",
-            animationDuration: `${3 + Math.random() * 5}s`,
-            animationDelay: `${Math.random() * 5}s`,
-            width: `${2 + Math.random() * 3}px`,
-            height: `${2 + Math.random() * 3}px`,
-            opacity: 0.3 + Math.random() * 0.4,
-          }}
+          style={style}
         />
       ))}
 

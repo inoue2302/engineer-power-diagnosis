@@ -13,7 +13,8 @@ export type WarriorType =
   | "バランス型"
   | "コミュ力特化型"
   | "学習意欲型"
-  | "サバイバー型";
+  | "サバイバー型"
+  | "測定不能型";
 
 export type StatusScores = {
   technique: number;

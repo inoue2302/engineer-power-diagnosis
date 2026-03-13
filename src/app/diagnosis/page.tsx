@@ -9,6 +9,7 @@ import { playSendSound, playImpactSound, playScouterBeep, playResultSound } from
 import { enhanceDiagnosis } from "@/app/actions/enhance-diagnosis";
 import { parseDiagnosisResult } from "@/lib/parse-result";
 import type { Message, MessageRole, DiagnosisPhase } from "@/types/diagnosis";
+import Link from "next/link";
 
 function generateId() {
   return crypto.randomUUID();
@@ -123,7 +124,9 @@ export default function DiagnosisPage() {
         setPhase("result");
 
         // 非同期でRAG強化を実行（ベース結果は即座に表示される）
-        const baseResult = parseDiagnosisResult(result.message);
+        // 早期終了（関係ない回答2回）の場合はRAGをスキップ
+        const userMsgCount = updatedMessages.filter((m) => m.role === "user").length;
+        const baseResult = userMsgCount >= 7 ? parseDiagnosisResult(result.message) : null;
         if (baseResult) {
           setIsEnhancing(true);
           const userMsgs = updatedMessages
@@ -237,12 +240,12 @@ export default function DiagnosisPage() {
         <div className="max-w-2xl mx-auto px-4 py-3">
           {phase === "result" ? (
             <div className="flex gap-2">
-              <a
+              <Link
                 href="/"
                 className="flex-1 text-center rounded-lg border border-[rgba(255,255,255,0.15)] bg-[rgba(255,255,255,0.05)] px-4 py-3 text-sm text-[var(--foreground)] transition-all hover:bg-[rgba(255,255,255,0.1)]"
               >
                 トップに戻る
-              </a>
+              </Link>
               <a
                 href="/diagnosis"
                 className="flex-1 text-center rounded-lg border border-[var(--energy-orange)] bg-[rgba(255,107,0,0.1)] px-4 py-3 text-sm font-bold text-[var(--energy-orange)] transition-all hover:bg-[rgba(255,107,0,0.2)]"
