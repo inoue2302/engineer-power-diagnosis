@@ -24,15 +24,15 @@ export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-1.5">
-      <div className="flex gap-2">
-        <input
-          type="text"
+      <div className="flex gap-2 items-start">
+        <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           maxLength={MAX_LENGTH + 50}
           disabled={disabled}
+          rows={3}
           placeholder={disabled ? "応答を待っています..." : "回答を入力..."}
-          className={`flex-1 rounded-lg border bg-[rgba(255,255,255,0.05)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[rgba(240,230,211,0.3)] focus:outline-none focus:shadow-[0_0_10px_rgba(255,107,0,0.15)] transition-all ${
+          className={`flex-1 rounded-lg border bg-[rgba(255,255,255,0.05)] px-4 py-3 text-base text-[var(--foreground)] placeholder:text-[rgba(240,230,211,0.3)] focus:outline-none focus:shadow-[0_0_10px_rgba(255,107,0,0.15)] transition-all resize-none ${
             isOverLimit
               ? "border-red-500 focus:border-red-500"
               : "border-[rgba(255,107,0,0.2)] focus:border-[var(--energy-orange)]"
