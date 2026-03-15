@@ -41,7 +41,7 @@ export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
         <button
           type="submit"
           disabled={disabled || !input.trim() || isOverLimit}
-          className="absolute right-2 bottom-2 rounded-lg border border-[var(--energy-orange)] bg-[rgba(255,107,0,0.15)] p-2 text-[var(--energy-orange)] transition-all hover:bg-[rgba(255,107,0,0.3)] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+          className="absolute right-2 top-2 rounded-lg border border-[var(--energy-orange)] bg-[rgba(255,107,0,0.15)] p-2 text-[var(--energy-orange)] transition-all hover:bg-[rgba(255,107,0,0.3)] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
           aria-label="送信"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
